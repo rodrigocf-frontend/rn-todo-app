@@ -18,4 +18,5 @@ export const Container = styled.TextInput.attrs<Container>(
   border: 1px;
   border-color: ${({ theme, isFocused }) =>
     isFocused ? theme.color.PURPLE_900 : theme.color.GRAY_700};
+  flex: 1;
 `;
