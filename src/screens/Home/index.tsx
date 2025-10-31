@@ -19,7 +19,7 @@ import { Alert, FlatList, TextInput } from "react-native";
 import _ from "lodash";
 import { loadData, storeData } from "../../services/tasks";
 import { Filter } from "../../components/Filter";
-import { AppError } from "../../utils/errors";
+import { AppError } from "../../utils/error-handlers";
 
 export type AppState = {
   tasks: Task[];
