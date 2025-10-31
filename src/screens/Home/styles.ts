@@ -44,3 +44,9 @@ export const CounterWrapper = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
+
+export const FilterWrapper = styled.View`
+  flex-direction: row;
+  justify-content: flex-start;
+  margin: 16px 0 0 0;
+`;

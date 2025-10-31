@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   CounterWrapper,
+  FilterWrapper,
   Header,
   InputWrapper,
   Logo,
@@ -11,26 +12,37 @@ import { Input } from "../../components/Input";
 import { useTheme } from "styled-components/native";
 import { PlusCircleIcon } from "phosphor-react-native";
 import { Counter } from "../../components/Counter";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Task } from "../../components/Task";
 import { EmptyTasks } from "../../components/EmptyTasks";
 import { Alert, FlatList, TextInput } from "react-native";
 import _ from "lodash";
+import { loadData, storeData } from "../../services/tasks";
+import { Filter } from "../../components/Filter";
 
-type AppState = {
+export type AppState = {
   tasks: Task[];
   lastId: number;
 };
 
+type FilterValue = {
+  condition: [string] | [string, string];
+  orderBy: ["asc" | "desc"];
+};
+
 export function Home() {
   const theme = useTheme();
-
   const [taskText, setTaskText] = useState("");
   const inputRef = useRef<TextInput>(null);
 
   const [data, setData] = useState<AppState>({
     tasks: [],
     lastId: 0,
+  });
+
+  const [filter, setFilter] = useState<FilterValue>({
+    condition: [""],
+    orderBy: ["asc"],
   });
 
   const { tasks } = data;
@@ -90,15 +102,30 @@ export function Home() {
     }));
   };
 
+  const handleFilter = (filterValue: FilterValue) => setFilter(filterValue);
+
+  useEffect(() => {
+    loadData().then((data) => setData(data));
+  }, []);
+
+  useEffect(() => {
+    storeData(data);
+  }, [data]);
+
   const completedTasks = _.filter(tasks, "isCompleted");
   const countCompletedTasks = _.size(completedTasks);
   const countTasksCreated = _.size(tasks);
+
+  const filteredData = _.orderBy(
+    data.tasks,
+    filter.condition,
+    filter.orderBy
+  ) as Task[];
 
   return (
     <Container>
       <Header>
         <Logo />
-
         <InputWrapper>
           <Input
             ref={inputRef}
@@ -125,12 +152,49 @@ export function Home() {
           />
         </CounterWrapper>
 
+        <FilterWrapper>
+          <Filter
+            clearFilter={() =>
+              handleFilter({
+                condition: [""],
+                orderBy: ["asc"],
+              })
+            }
+            buttons={[
+              {
+                title: "A-Z",
+                onPress: () =>
+                  handleFilter({
+                    condition: ["title"],
+                    orderBy: ["asc"],
+                  }),
+              },
+              {
+                title: "Completas",
+                onPress: () =>
+                  handleFilter({
+                    condition: ["isCompleted", "title"],
+                    orderBy: ["desc"],
+                  }),
+              },
+              {
+                title: "Incompletas",
+                onPress: () =>
+                  handleFilter({
+                    condition: ["isCompleted", "title"],
+                    orderBy: ["asc"],
+                  }),
+              },
+            ]}
+          />
+        </FilterWrapper>
+
         <FlatList
           contentContainerStyle={{
             rowGap: 5,
             marginTop: 20,
           }}
-          data={tasks}
+          data={filteredData}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Task
