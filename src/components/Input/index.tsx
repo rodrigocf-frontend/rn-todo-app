@@ -1,8 +1,10 @@
-import { TextInputProps } from "react-native";
+import { TextInputProps, ViewProps } from "react-native";
 import { Container } from "./styles";
-import { useState } from "react";
+import { Ref, RefObject, useState } from "react";
 
-type Props = TextInputProps;
+type Props = TextInputProps & {
+  ref: Ref<any> | undefined;
+};
 
 export function Input({ ...args }: Props) {
   const [focused, setFocused] = useState(false);
