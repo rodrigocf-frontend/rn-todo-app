@@ -7,6 +7,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Home } from "./src/screens/Home";
 import { Providers } from "./src/store";
+import { StatusBar } from "expo-status-bar";
+import { Container } from "./styles";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,7 +29,10 @@ export default function App() {
   }
   return (
     <Providers>
-      <Home />
+      <Container>
+        <Home />
+      </Container>
+      <StatusBar style="light" />
     </Providers>
   );
 }
