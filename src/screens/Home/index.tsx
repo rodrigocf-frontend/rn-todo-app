@@ -19,6 +19,7 @@ import { Alert, FlatList, TextInput } from "react-native";
 import _ from "lodash";
 import { loadData, storeData } from "../../services/tasks";
 import { Filter } from "../../components/Filter";
+import { AppError } from "../../utils/errors";
 
 export type AppState = {
   tasks: Task[];
@@ -105,11 +106,13 @@ export function Home() {
   const handleFilter = (filterValue: FilterValue) => setFilter(filterValue);
 
   useEffect(() => {
-    loadData().then((data) => setData(data));
+    loadData()
+      .then((data) => setData(data))
+      .catch((e) => AppError(e));
   }, []);
 
   useEffect(() => {
-    storeData(data);
+    storeData(data).catch((e) => AppError(e));
   }, [data]);
 
   const completedTasks = _.filter(tasks, "isCompleted");
