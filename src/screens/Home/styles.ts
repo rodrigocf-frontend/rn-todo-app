@@ -35,7 +35,7 @@ export const Button = styled.TouchableOpacity.attrs({
 `;
 
 export const Body = styled.View`
-  flex: 5.7;
+  flex: 5.3;
   background-color: ${({ theme }) => theme.color.GRAY_600};
   padding: 55px 24px 0 24px;
 `;
@@ -44,10 +44,3 @@ export const CounterWrapper = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
-
-export const TodoList = styled.FlatList.attrs({
-  contentContainerStyle: {
-    rowGap: 5,
-    marginTop: 20,
-  },
-})``;
