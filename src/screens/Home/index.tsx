@@ -6,49 +6,145 @@ import {
   Header,
   InputWrapper,
   Logo,
-  TodoList,
 } from "./styles";
 import { Input } from "../../components/Input";
 import { useTheme } from "styled-components/native";
-import { ClipboardIcon, PlusCircleIcon } from "phosphor-react-native";
+import { PlusCircleIcon } from "phosphor-react-native";
 import { Counter } from "../../components/Counter";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Task } from "../../components/Task";
-import { FlatList } from "react-native";
 import { EmptyTasks } from "../../components/EmptyTasks";
+import { Alert, FlatList, TextInput } from "react-native";
+import _ from "lodash";
+
+type AppState = {
+  tasks: Task[];
+  lastId: number;
+};
 
 export function Home() {
   const theme = useTheme();
 
-  const [data, setData] = useState();
+  const [taskText, setTaskText] = useState("");
+  const inputRef = useRef<TextInput>(null);
+
+  const [data, setData] = useState<AppState>({
+    tasks: [],
+    lastId: 0,
+  });
+
+  const { tasks } = data;
+
+  const handleAddTask = () => {
+    inputRef.current?.blur();
+    if (taskText.length < 1) {
+      return Alert.alert(
+        "Inválido",
+        "Título da task deve ter no min. 1 caracter"
+      );
+    }
+    return Alert.alert("Criar", `Deseja criar a task ${taskText}?`, [
+      {
+        text: "Sim",
+        onPress: () => {
+          setData((prevState) => ({
+            ...prevState,
+            tasks: [
+              {
+                id: (prevState.lastId += 1).toString(),
+                title: taskText,
+                isCompleted: false,
+              },
+              ...prevState.tasks,
+            ],
+            lastId: (prevState.lastId += 1),
+          }));
+          setTaskText("");
+        },
+      },
+      {
+        text: "Não",
+      },
+    ]);
+  };
+
+  const handleDeleteTask = (taskData: Task) => {
+    setData((prevState) => ({
+      ...prevState,
+      tasks: prevState.tasks.filter((task) => task.id !== taskData.id),
+    }));
+  };
+
+  const handleCompleteTask = (taskData: Task) => {
+    setData((prevState) => ({
+      ...prevState,
+      tasks: prevState.tasks.map((task) => {
+        if (task.id === taskData.id) {
+          return {
+            ...task,
+            isCompleted: !taskData.isCompleted,
+          };
+        }
+        return task;
+      }),
+    }));
+  };
+
+  const completedTasks = _.filter(tasks, "isCompleted");
+  const countCompletedTasks = _.size(completedTasks);
+  const countTasksCreated = _.size(tasks);
 
   return (
-    <>
-      <Container>
-        <Header>
-          <Logo />
+    <Container>
+      <Header>
+        <Logo />
 
-          <InputWrapper>
-            <Input placeholder="Adicione uma nova tarefa" />
-            <Button>
-              <PlusCircleIcon size={16} color={theme.color.GRAY_100} />
-            </Button>
-          </InputWrapper>
-        </Header>
-        <Body>
-          <CounterWrapper>
-            d
-            <Counter title="Criadas" value={0} labelColor="BLUE_500" />
-            <Counter title="Concluídas" value={0} labelColor="PURPLE_900" />
-          </CounterWrapper>
-
-          <TodoList
-            data={[]}
-            renderItem={() => <Task isCompleted />}
-            ListEmptyComponent={<EmptyTasks />}
+        <InputWrapper>
+          <Input
+            ref={inputRef}
+            placeholder="Adicione uma nova tarefa"
+            onChangeText={setTaskText}
+            value={taskText}
           />
-        </Body>
-      </Container>
-    </>
+          <Button onPress={handleAddTask}>
+            <PlusCircleIcon size={16} color={theme.color.GRAY_100} />
+          </Button>
+        </InputWrapper>
+      </Header>
+      <Body>
+        <CounterWrapper>
+          <Counter
+            title="Criadas"
+            value={countTasksCreated}
+            labelColor="BLUE_500"
+          />
+          <Counter
+            title="Concluídas"
+            value={countCompletedTasks}
+            labelColor="PURPLE_900"
+          />
+        </CounterWrapper>
+
+        <FlatList
+          contentContainerStyle={{
+            rowGap: 5,
+            marginTop: 20,
+          }}
+          data={tasks}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Task
+              id={item.id}
+              title={item.title}
+              isCompleted={item.isCompleted}
+              onPressTask={handleCompleteTask}
+              onRemove={handleDeleteTask}
+            />
+          )}
+          ListEmptyComponent={<EmptyTasks />}
+          showsVerticalScrollIndicator={false}
+        />
+      </Body>
+    </Container>
   );
 }
