@@ -1,4 +1,4 @@
-# 🤝 rn-participants-app (baseado no desafio I`m here)
+# 🤝 rn-todo-app (baseado no ToDo)
 
 ![Badge de Status](https://img.shields.io/badge/Status-Concluído-success)
 ![Badge de Tecnologias](https://img.shields.io/badge/Tech-React_Native%20%7C%20TypeScript%20%7C%20StyledComponents-blue)
@@ -9,7 +9,7 @@ Uma aplicação móvel simples e reativa para o gerenciamento de lista de tasks.
 
 ## 🖼️ Demonstração (Screenshot/GIF)
 
-![teste](https://i.imgur.com/77cFMH4.gif)
+![Demostração da aplicação em execução](https://imgur.com/d15IXg2.gif)
 
 ---
 
@@ -18,11 +18,11 @@ Uma aplicação móvel simples e reativa para o gerenciamento de lista de tasks.
 O aplicativo gerencia a lista de atividades de forma dinâmica, seguindo o layout do Figma:
 
 - **➕ Adicionar Task:** Cadastro de novas tasks na lista de atividades.
-- **🗑️ Remover Participante:** Remoção instantânea de qualquer item da lista.
+- **🗑️ Remover Task:** Remoção instantânea de qualquer item da lista.
 - **UX Aprimorada:** Exibição da data atual e uma mensagem de estado vazio amigável.
 - **Navegação:** Preparado com estrutura de _screens_ para expansões futuras.
 - **[ Extra ] Filtragem:** Filtros para organizar a lista em ordem desejada pelo usuário.
-- **[ Extra ] Persistência de Dados:** A lista de participantes é salva e carregada automaticamente na inicialização (`AsyncStorage`).
+- **[ Extra ] Persistência de Dados:** A lista de taaks é salva e carregada automaticamente na inicialização (`AsyncStorage`).
 
 ---
 
@@ -75,7 +75,7 @@ O projeto foi construído utilizando as seguintes ferramentas e conceitos, confo
 ## 💡 Detalhes Técnicos (Destaques no Portfólio)
 
 - **Persistência de Estado (`AsyncStorage`):** Implementação do salvamento e carregamento da lista de atividades no _storage_ local, garantindo que os dados permaneçam após o fechamento do app.
-- **Imutabilidade e Lodash:** Uso de funções para manipular o array de participantes sem modificar o estado diretamente, seguindo o princípio da imutabilidade do React.
+- **Imutabilidade e Lodash:** Uso de funções para manipular o array de atividades sem modificar o estado diretamente, seguindo o princípio da imutabilidade do React.
 
 ---
 
